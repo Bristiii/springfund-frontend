@@ -1,8 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, TrendingUp, Bookmark, BookmarkCheck, Loader2 } from 'lucide-react';
+import { ArrowLeft, Target, Bookmark, BookmarkCheck, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface FundDetails {
   meta: {
@@ -19,6 +20,8 @@ interface FundDetails {
 }
 
 const FundDetails = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [fundData, setFundData] = useState<FundDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
@@ -27,6 +30,12 @@ const FundDetails = () => {
 
   // Mock scheme code - in real app this would come from route params
   const schemeCode = "120503";
+
+  // Check if user is logged in (mock function)
+  const isUserLoggedIn = () => {
+    // In a real app, this would check for JWT token or user session
+    return localStorage.getItem('userToken') !== null;
+  };
 
   useEffect(() => {
     fetchFundDetails();
@@ -51,6 +60,16 @@ const FundDetails = () => {
   };
 
   const handleSaveFund = async () => {
+    // Check if user is logged in
+    if (!isUserLoggedIn()) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to save mutual funds to your portfolio.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSaving(true);
     
     try {
@@ -61,8 +80,25 @@ const FundDetails = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       setIsSaved(!isSaved);
+      
+      if (!isSaved) {
+        toast({
+          title: "Fund Saved",
+          description: "The mutual fund has been added to your portfolio.",
+        });
+      } else {
+        toast({
+          title: "Fund Removed",
+          description: "The mutual fund has been removed from your portfolio.",
+        });
+      }
     } catch (error) {
       console.error('Save error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save fund. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }
@@ -101,7 +137,7 @@ const FundDetails = () => {
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-400 mb-4">{error || 'Fund not found'}</p>
-          <Button variant="outline" className="text-gray-300 border-gray-600">
+          <Button variant="outline" className="text-gray-300 border-gray-600" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Go Back
           </Button>
@@ -117,20 +153,20 @@ const FundDetails = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white">
+              <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white" onClick={() => navigate(-1)}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
               </Button>
               <div className="flex items-center space-x-2">
-                <TrendingUp className="h-8 w-8 text-blue-500" />
+                <Target className="h-8 w-8 text-blue-500" />
                 <span className="text-xl font-bold">SpringFund</span>
               </div>
             </div>
             <div className="flex space-x-4">
-              <Button variant="ghost" className="text-gray-300 hover:text-white">
+              <Button variant="ghost" className="text-gray-300 hover:text-white" onClick={() => navigate('/saved-funds')}>
                 Saved Funds
               </Button>
-              <Button variant="ghost" className="text-gray-300 hover:text-white">
+              <Button variant="ghost" className="text-gray-300 hover:text-white" onClick={() => navigate('/')}>
                 Logout
               </Button>
             </div>

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, TrendingUp, Shield, Users, Clock } from 'lucide-react';
+import { Search, Target, Shield, Users, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -43,7 +43,7 @@ const Index = () => {
       description: "Find mutual funds quickly with our advanced search functionality"
     },
     {
-      icon: TrendingUp,
+      icon: Target,
       title: "Real-time Data",
       description: "Access up-to-date mutual fund information and performance metrics"
     },
@@ -66,7 +66,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center space-x-2">
-              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+              <Target className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
               <span className="text-lg sm:text-xl font-bold text-white">SpringFund</span>
             </div>
             <div className="flex space-x-2 sm:space-x-4">
@@ -156,11 +156,12 @@ const Index = () => {
       <div className="py-16 bg-gray-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-extrabold text-white">
+            <h2 className="text-3xl font-extrabold text-white mb-4">
               Why Choose SpringFund?
             </h2>
-            <p className="mt-4 text-xl text-gray-300">
-              Everything you need to make informed mutual fund investments
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              Experience the ultimate platform for mutual fund investments with cutting-edge features 
+              designed to empower both novice investors and seasoned professionals in making informed financial decisions.
             </p>
           </div>
           

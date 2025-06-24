@@ -1,93 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { TrendingUp, ArrowLeft, Trash2, Loader2, BookmarkX } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, Target, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-interface SavedFund {
+interface MutualFund {
   id: string;
-  schemeCode: string;
   schemeName: string;
   fundHouse: string;
   nav: string;
   date: string;
-  savedAt: string;
 }
+
+const mockSavedFunds: MutualFund[] = [
+  {
+    id: '1',
+    schemeName: 'SBI Bluechip Fund',
+    fundHouse: 'SBI Mutual Fund',
+    nav: '540.25',
+    date: '2024-01-26',
+  },
+  {
+    id: '2',
+    schemeName: 'HDFC Top 100 Fund',
+    fundHouse: 'HDFC Mutual Fund',
+    nav: '785.50',
+    date: '2024-01-26',
+  },
+  {
+    id: '3',
+    schemeName: 'ICICI Prudential Bluechip Fund',
+    fundHouse: 'ICICI Prudential Mutual Fund',
+    nav: '420.80',
+    date: '2024-01-26',
+  },
+];
 
 const SavedFunds = () => {
   const navigate = useNavigate();
-  const [savedFunds, setSavedFunds] = useState<SavedFund[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [deletingFundId, setDeletingFundId] = useState<string | null>(null);
+  const [savedFunds, setSavedFunds] = useState<MutualFund[]>(mockSavedFunds);
 
-  useEffect(() => {
-    fetchSavedFunds();
-  }, []);
-
-  const fetchSavedFunds = async () => {
-    try {
-      // TODO: Implement API call to fetch saved funds
-      
-      // Mock data for now
-      const mockSavedFunds: SavedFund[] = [
-        {
-          id: '1',
-          schemeCode: '120503',
-          schemeName: 'HDFC Balanced Advantage Fund - Direct Plan - Growth',
-          fundHouse: 'HDFC Mutual Fund',
-          nav: '42.85',
-          date: '28-12-2024',
-          savedAt: '2024-12-28'
-        },
-        {
-          id: '2',
-          schemeCode: '118551',
-          schemeName: 'SBI Bluechip Fund - Direct Plan - Growth',
-          fundHouse: 'SBI Mutual Fund',
-          nav: '65.42',
-          date: '28-12-2024',
-          savedAt: '2024-12-27'
-        }
-      ];
-      
-      // Simulate loading delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setSavedFunds(mockSavedFunds);
-    } catch (error) {
-      console.error('Failed to fetch saved funds:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleRemoveFund = async (fundId: string) => {
-    setDeletingFundId(fundId);
-    
-    try {
-      // TODO: Implement API call to remove saved fund
-      console.log('Removing fund:', fundId);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setSavedFunds(prev => prev.filter(fund => fund.id !== fundId));
-    } catch (error) {
-      console.error('Failed to remove fund:', error);
-    } finally {
-      setDeletingFundId(null);
-    }
-  };
-
-  const handleFundClick = (fund: SavedFund) => {
-    // Navigate to fund details
-    console.log('Navigate to fund details:', fund);
-  };
-
-  const handleLogout = () => {
-    // TODO: Implement logout logic
-    console.log('Logging out...');
-    navigate('/');
+  const handleRemoveFund = (id: string) => {
+    setSavedFunds(savedFunds.filter(fund => fund.id !== id));
   };
 
   return (
@@ -100,14 +54,14 @@ const SavedFunds = () => {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
+                className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-3"
                 onClick={() => navigate(-1)}
               >
                 <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
                 <span className="hidden sm:inline">Back</span>
               </Button>
               <div className="flex items-center space-x-2">
-                <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+                <Target className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
                 <span className="text-lg sm:text-xl font-bold">SpringFund</span>
               </div>
             </div>
@@ -118,13 +72,16 @@ const SavedFunds = () => {
                 className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
                 onClick={() => navigate('/search')}
               >
-                <span className="hidden sm:inline">Search </span>Funds
+                Search
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
                 className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
-                onClick={handleLogout}
+                onClick={() => {
+                  console.log('Logging out...');
+                  navigate('/');
+                }}
               >
                 Logout
               </Button>
@@ -133,88 +90,55 @@ const SavedFunds = () => {
         </div>
       </nav>
 
+      {/* Saved Funds Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Saved Mutual Funds</h1>
-          <p className="text-gray-400">Track your favorite mutual funds in one place</p>
-        </div>
+        <h1 className="text-3xl font-bold text-white mb-6">
+          My Saved Funds ({savedFunds.length})
+        </h1>
 
-        {isLoading ? (
+        {savedFunds.length === 0 ? (
           <div className="text-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
-            <p className="text-gray-400">Loading your saved funds...</p>
-          </div>
-        ) : savedFunds.length === 0 ? (
-          <div className="text-center py-12">
-            <BookmarkX className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-xl font-medium text-white mb-2">No saved funds yet</h3>
-            <p className="text-gray-400 mb-6">
-              Start by searching and saving your favorite mutual funds
-            </p>
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              Search Mutual Funds
+            <p className="text-gray-400">No funds saved yet.</p>
+            <Button 
+              className="mt-4 bg-blue-600 hover:bg-blue-700"
+              onClick={() => navigate('/search')}
+            >
+              Explore Funds
             </Button>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center mb-6">
-              <p className="text-gray-400">
-                {savedFunds.length} fund{savedFunds.length !== 1 ? 's' : ''} saved
-              </p>
-            </div>
-
-            <div className="grid gap-4">
-              {savedFunds.map((fund) => (
-                <Card 
-                  key={fund.id}
-                  className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors"
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex justify-between items-start">
-                      <div 
-                        className="flex-1 cursor-pointer"
-                        onClick={() => handleFundClick(fund)}
-                      >
-                        <CardTitle className="text-white text-lg hover:text-blue-400 transition-colors">
-                          {fund.schemeName}
-                        </CardTitle>
-                        <CardDescription className="text-gray-400 mt-1">
-                          {fund.fundHouse} • Code: {fund.schemeCode}
-                        </CardDescription>
-                        <p className="text-sm text-gray-500 mt-2">
-                          Saved on {new Date(fund.savedAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                      
-                      <div className="flex items-center space-x-4">
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-green-400">
-                            ₹{fund.nav}
-                          </p>
-                          <p className="text-sm text-gray-400">
-                            {fund.date}
-                          </p>
-                        </div>
-                        
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveFund(fund.id)}
-                          disabled={deletingFundId === fund.id}
-                          className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
-                        >
-                          {deletingFundId === fund.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
+          <div className="grid gap-4">
+            {savedFunds.map((fund) => (
+              <Card key={fund.id} className="bg-gray-800 border-gray-700">
+                <CardHeader className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <CardTitle className="text-white">{fund.schemeName}</CardTitle>
+                    <CardDescription className="text-gray-400">
+                      {fund.fundHouse}
+                    </CardDescription>
+                  </div>
+                  <Button 
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => handleRemoveFund(fund.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <p className="text-gray-400 text-sm">Current NAV</p>
+                      <p className="text-white font-medium">₹{fund.nav}</p>
                     </div>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Date</p>
+                      <p className="text-white font-medium">{fund.date}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         )}
       </div>
