@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { TrendingUp, Eye, EyeOff } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,9 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -27,14 +29,30 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // TODO: Implement login logic with JWT
     try {
       console.log('Login attempt:', formData);
-      // API call will go here
-      // For now, just navigate to home after successful login
+      
+      // Simulate login process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Login the user
+      login(formData.email);
+      
+      // Show welcome toast
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully logged in.",
+      });
+      
+      // Navigate to home after successful login
       navigate('/');
     } catch (error) {
       console.error('Login error:', error);
+      toast({
+        title: "Login Failed",
+        description: "Please check your credentials and try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }

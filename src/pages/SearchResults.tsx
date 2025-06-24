@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
 
 interface MutualFund {
   schemeCode: string;
@@ -15,6 +17,7 @@ interface MutualFund {
 
 const SearchResults = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuth();
   const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [results, setResults] = useState<MutualFund[]>([]);
@@ -65,9 +68,25 @@ const SearchResults = () => {
   };
 
   const handleLogout = () => {
-    // TODO: Implement logout logic
-    console.log('Logging out...');
+    logout();
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
     navigate('/');
+  };
+
+  const handleSavedFunds = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication Required",
+        description: "Please login to view your saved funds.",
+        variant: "destructive",
+      });
+      navigate('/login');
+      return;
+    }
+    navigate('/saved-funds');
   };
 
   return (
@@ -96,7 +115,7 @@ const SearchResults = () => {
                 variant="ghost" 
                 size="sm"
                 className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
-                onClick={() => navigate('/saved-funds')}
+                onClick={handleSavedFunds}
               >
                 Saved Funds
               </Button>

@@ -3,6 +3,8 @@ import { ArrowLeft, Target, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
 
 interface MutualFund {
   id: string;
@@ -38,10 +40,20 @@ const mockSavedFunds: MutualFund[] = [
 
 const SavedFunds = () => {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [savedFunds, setSavedFunds] = useState<MutualFund[]>(mockSavedFunds);
 
   const handleRemoveFund = (id: string) => {
     setSavedFunds(savedFunds.filter(fund => fund.id !== id));
+  };
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
+    navigate('/');
   };
 
   return (
@@ -78,10 +90,7 @@ const SavedFunds = () => {
                 variant="ghost" 
                 size="sm"
                 className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
-                onClick={() => {
-                  console.log('Logging out...');
-                  navigate('/');
-                }}
+                onClick={handleLogout}
               >
                 Logout
               </Button>
