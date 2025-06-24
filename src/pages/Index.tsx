@@ -66,19 +66,21 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center space-x-2">
-              <TrendingUp className="h-8 w-8 text-blue-500" />
-              <span className="text-xl font-bold text-white">SpringFund</span>
+              <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+              <span className="text-lg sm:text-xl font-bold text-white">SpringFund</span>
             </div>
-            <div className="flex space-x-4">
+            <div className="flex space-x-2 sm:space-x-4">
               <Button 
                 variant="ghost" 
-                className="text-gray-300 hover:text-white hover:bg-gray-800"
+                size="sm"
+                className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
                 onClick={() => navigate('/login')}
               >
                 Login
               </Button>
               <Button 
-                className="bg-blue-600 hover:bg-blue-700"
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm px-2 sm:px-4"
                 onClick={() => navigate('/register')}
               >
                 Register

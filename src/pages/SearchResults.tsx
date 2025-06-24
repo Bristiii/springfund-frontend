@@ -65,6 +65,12 @@ const SearchResults = () => {
     navigate(`/fund/${fund.schemeCode}`);
   };
 
+  const handleLogout = () => {
+    // TODO: Implement logout logic
+    console.log('Logging out...');
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Navigation */}
@@ -82,21 +88,24 @@ const SearchResults = () => {
                 Back
               </Button>
               <div className="flex items-center space-x-2">
-                <TrendingUp className="h-8 w-8 text-blue-500" />
-                <span className="text-xl font-bold">SpringFund</span>
+                <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+                <span className="text-lg sm:text-xl font-bold">SpringFund</span>
               </div>
             </div>
-            <div className="flex space-x-4">
+            <div className="flex space-x-2 sm:space-x-4">
               <Button 
                 variant="ghost" 
-                className="text-gray-300 hover:text-white hover:bg-gray-800"
+                size="sm"
+                className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
                 onClick={() => navigate('/saved-funds')}
               >
                 Saved Funds
               </Button>
               <Button 
                 variant="ghost" 
-                className="text-gray-300 hover:text-white hover:bg-gray-800"
+                size="sm"
+                className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
+                onClick={handleLogout}
               >
                 Logout
               </Button>

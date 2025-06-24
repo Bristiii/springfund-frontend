@@ -1,8 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, ArrowLeft, Trash2, Loader2, BookmarkX } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 interface SavedFund {
   id: string;
@@ -15,6 +15,7 @@ interface SavedFund {
 }
 
 const SavedFunds = () => {
+  const navigate = useNavigate();
   const [savedFunds, setSavedFunds] = useState<SavedFund[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingFundId, setDeletingFundId] = useState<string | null>(null);
@@ -83,6 +84,12 @@ const SavedFunds = () => {
     console.log('Navigate to fund details:', fund);
   };
 
+  const handleLogout = () => {
+    // TODO: Implement logout logic
+    console.log('Logging out...');
+    navigate('/');
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Navigation */}
@@ -90,20 +97,35 @@ const SavedFunds = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
+                onClick={() => navigate(-1)}
+              >
+                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Back</span>
               </Button>
               <div className="flex items-center space-x-2">
-                <TrendingUp className="h-8 w-8 text-blue-500" />
-                <span className="text-xl font-bold">SpringFund</span>
+                <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+                <span className="text-lg sm:text-xl font-bold">SpringFund</span>
               </div>
             </div>
-            <div className="flex space-x-4">
-              <Button variant="ghost" className="text-gray-300 hover:text-white">
-                Search Funds
+            <div className="flex space-x-2 sm:space-x-4">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
+                onClick={() => navigate('/search')}
+              >
+                <span className="hidden sm:inline">Search </span>Funds
               </Button>
-              <Button variant="ghost" className="text-gray-300 hover:text-white">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                className="text-gray-300 hover:text-white hover:bg-gray-800 text-xs sm:text-sm px-2 sm:px-4"
+                onClick={handleLogout}
+              >
                 Logout
               </Button>
             </div>
