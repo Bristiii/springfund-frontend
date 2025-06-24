@@ -12,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -30,27 +30,36 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      console.log('Login attempt:', formData);
+      const response = await fetch('http://127.0.0.1:8000/api/login/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
       
-      // Simulate login process
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      login(data.token);
       
-      // Login the user
-      login(formData.email);
-      
-      // Show welcome toast
       toast({
         title: "Welcome back!",
         description: "You have successfully logged in.",
       });
       
-      // Navigate to home after successful login
       navigate('/');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error);
       toast({
         title: "Login Failed",
-        description: "Please check your credentials and try again.",
+        description: error.message || "Please check your credentials and try again.",
         variant: "destructive",
       });
     } finally {
@@ -86,16 +95,17 @@ const Login = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <Label htmlFor="email" className="text-white">Email address</Label>
+                <Label htmlFor="username" className="text-white">Username</Label>
                 <Input
-                  id="email"
-                  name="email"
-                  type="email"
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
                   required
-                  value={formData.email}
+                  value={formData.username}
                   onChange={handleInputChange}
                   className="mt-1 bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your email"
+                  placeholder="Enter your username"
                 />
               </div>
 
@@ -106,6 +116,7 @@ const Login = () => {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
                     required
                     value={formData.password}
                     onChange={handleInputChange}
@@ -149,7 +160,7 @@ const Login = () => {
                   onClick={() => navigate('/register')}
                   className="text-blue-500 hover:text-blue-400"
                 >
-                  Sign up
+                  Register
                 </button>
               </div>
             </form>
