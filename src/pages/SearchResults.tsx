@@ -4,6 +4,7 @@ import { Search, TrendingUp, ArrowLeft, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface MutualFund {
   schemeCode: string;
@@ -14,20 +15,30 @@ interface MutualFund {
 }
 
 const SearchResults = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [results, setResults] = useState<MutualFund[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+  useEffect(() => {
+    const query = searchParams.get('q');
+    if (query) {
+      setSearchQuery(query);
+      performSearch(query);
+    }
+  }, [searchParams]);
+
+  const performSearch = async (query: string) => {
+    if (!query.trim()) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
       // Using MF API to search for funds
-      const response = await fetch(`https://api.mfapi.in/mf/search?q=${encodeURIComponent(searchQuery)}`);
+      const response = await fetch(`https://api.mfapi.in/mf/search?q=${encodeURIComponent(query)}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch data');
@@ -43,9 +54,15 @@ const SearchResults = () => {
     }
   };
 
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+      performSearch(searchQuery);
+    }
+  };
+
   const handleFundClick = (fund: MutualFund) => {
-    // Navigate to fund details
-    console.log('Navigate to fund details:', fund);
+    navigate(`/fund/${fund.schemeCode}`);
   };
 
   return (
@@ -55,7 +72,12 @@ const SearchResults = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" className="text-gray-300 hover:text-white">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-gray-300 hover:text-white hover:bg-gray-800"
+                onClick={() => navigate('/')}
+              >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
               </Button>
@@ -65,10 +87,17 @@ const SearchResults = () => {
               </div>
             </div>
             <div className="flex space-x-4">
-              <Button variant="ghost" className="text-gray-300 hover:text-white">
+              <Button 
+                variant="ghost" 
+                className="text-gray-300 hover:text-white hover:bg-gray-800"
+                onClick={() => navigate('/saved-funds')}
+              >
                 Saved Funds
               </Button>
-              <Button variant="ghost" className="text-gray-300 hover:text-white">
+              <Button 
+                variant="ghost" 
+                className="text-gray-300 hover:text-white hover:bg-gray-800"
+              >
                 Logout
               </Button>
             </div>
@@ -84,7 +113,7 @@ const SearchResults = () => {
               <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
               <Input
                 type="text"
-                placeholder="Search mutual funds..."
+                placeholder="Search for mutual funds (e.g., SBI, HDFC, Axis, ICICI)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
@@ -93,8 +122,8 @@ const SearchResults = () => {
             </div>
             <Button 
               onClick={handleSearch}
-              disabled={isLoading}
-              className="bg-blue-600 hover:bg-blue-700 px-8"
+              disabled={isLoading || !searchQuery.trim()}
+              className="bg-blue-600 hover:bg-blue-700 px-8 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Search'}
             </Button>
@@ -118,7 +147,7 @@ const SearchResults = () => {
         {!isLoading && results.length === 0 && searchQuery && (
           <div className="text-center py-12">
             <p className="text-gray-400">No mutual funds found for "{searchQuery}"</p>
-            <p className="text-gray-500 text-sm mt-2">Try searching with different keywords</p>
+            <p className="text-gray-500 text-sm mt-2">Try searching with different keywords like fund house names (SBI, HDFC, ICICI)</p>
           </div>
         )}
 

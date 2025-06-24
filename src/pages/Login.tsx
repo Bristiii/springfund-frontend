@@ -5,8 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -29,6 +31,8 @@ const Login = () => {
     try {
       console.log('Login attempt:', formData);
       // API call will go here
+      // For now, just navigate to home after successful login
+      navigate('/');
     } catch (error) {
       console.error('Login error:', error);
     } finally {
@@ -122,9 +126,13 @@ const Login = () => {
 
               <div className="text-center">
                 <span className="text-gray-400">Don't have an account? </span>
-                <a href="#" className="text-blue-500 hover:text-blue-400">
+                <button
+                  type="button"
+                  onClick={() => navigate('/register')}
+                  className="text-blue-500 hover:text-blue-400"
+                >
                   Sign up
-                </a>
+                </button>
               </div>
             </form>
           </CardContent>

@@ -5,8 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -57,6 +59,8 @@ const Register = () => {
     try {
       console.log('Registration attempt:', formData);
       // API call will go here
+      // For now, just navigate to login after successful registration
+      navigate('/login');
     } catch (error) {
       console.error('Registration error:', error);
     } finally {
@@ -191,9 +195,13 @@ const Register = () => {
 
               <div className="text-center">
                 <span className="text-gray-400">Already have an account? </span>
-                <a href="#" className="text-blue-500 hover:text-blue-400">
+                <button
+                  type="button"
+                  onClick={() => navigate('/login')}
+                  className="text-blue-500 hover:text-blue-400"
+                >
                   Sign in
-                </a>
+                </button>
               </div>
             </form>
           </CardContent>
